@@ -7,7 +7,9 @@ const App = () => {
     setNum(num + 1);
   };
   const decreaseNum = () => {
-    setNum(num - 1);
+   if(num>0){
+     setNum(num - 1);
+   }
   };
   const jumpNum = () => {
     setNum(num + 5);
