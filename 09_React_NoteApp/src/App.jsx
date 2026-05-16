@@ -1,30 +1,70 @@
 import { useState } from "react";
 
 const App = () => {
+  const [task, setTask] = useState([]);
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const [task, setTask] = useState([]);
+  const [editIndex , setEditIndex] = useState(null)
 
   const SubmitHandler = (e) => {
     e.preventDefault();
     // console.log(title , details);
-    if (!title.trim() || !details.trim()) {
-      alert("Please fill input field");
-    } else {
-      const copyTask = [...task];
-      copyTask.push({ title, details });
-      setTask(copyTask);
-      setDetails("");
-      setTitle("");
-    }
+   if (!title.trim() || !details.trim()) {
+    alert("Please fill input field");
+    return;
+  }
+
+  const copyTask = [...task];
+
+  // ADD TASK
+  if (editIndex === null) {
+    copyTask.push({ title, details });
+  }
+
+  // UPDATE TASK
+  else {
+    copyTask[editIndex] = {
+      title,
+      details,
+    };
+
+    setEditIndex(null);
+  }
+
+  setTask(copyTask);
+
+  setTitle("");
+  setDetails("");
   };
   const DeleteHandler = (id) => {
     // console.log(id);
-    const copyTask = [...task];
-    copyTask.splice(id, 1);
-    setTask(copyTask);
-  };
+  //  using filer--->
+      const filterData = task.filter((_, index)=> index !== id);
+      // console.log(filterData);
 
+      setTask(filterData)
+      
+
+
+
+
+ /* const copyTask = [...task];
+    copyTask.splice(id, 1);
+    setTask(copyTask); */
+
+
+
+  };
+  const EditHandler = (index) => {
+    // console.log(index);
+    const selectTask = task[index]
+    setEditIndex(index);
+    // console.log(selectTask);
+    setTitle(selectTask.title); // input pe show hoga -title
+    setDetails(selectTask.details); // input pe show hoga - details
+    
+   
+  };
   return (
     <div className="min-h-screen bg-black text-white px-6 py-8 md:px-12">
       {/* Heading */}
@@ -69,7 +109,7 @@ const App = () => {
               type="submit"
               className="bg-white text-black font-semibold py-3 rounded-xl hover:bg-gray-200 active:scale-95 transition cursor-pointer"
             >
-              Add Note
+             {editIndex === null ? "Add Note" : "Update Note"}
             </button>
           </form>
         </div>
@@ -90,12 +130,20 @@ const App = () => {
                       {elem.details}
                     </p>
                   </div>
-                  <button
+                  <div className="flex justify-between">
+                    <button
                     onClick={() => DeleteHandler(id)}
                     className="mt-6 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-medium active:scale-95 transition cursor-pointer p-3"
                   >
                     Delete
                   </button>
+                      <button
+                    onClick={() => EditHandler(id)}
+                    className="mt-6 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-medium active:scale-95 transition cursor-pointer p-3"
+                  >
+                  Edit
+                  </button>
+                  </div>
                 </div>
               );
             })}
